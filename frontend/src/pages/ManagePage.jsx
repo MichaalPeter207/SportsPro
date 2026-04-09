@@ -7,7 +7,7 @@
 // =============================================================
 import { useState, useEffect, useCallback } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const POSITIONS = [
   "Goalkeeper","Defender","Centre-Back","Left-Back","Right-Back",
   "Midfielder","Defensive Mid","Central Mid","Attacking Mid",
@@ -753,3 +753,4 @@ function RowItem({ main, sub, badge, badgeClass, onEdit }) {
     </div>
   );
 }
+

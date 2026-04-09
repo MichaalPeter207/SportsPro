@@ -19,7 +19,7 @@ import ManagePage        from "./pages/ManagePage";
 import AnalyticsDashboard from "./pages/analyticsdashboard";
 import TournamentsPage   from "./pages/TournamentsPage";
 
-const BASE         = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const IDLE_MS      = 30 * 60 * 1000;   // 30 min idle → logout
 const HIDDEN_MS    = 2  * 60 * 60 * 1000; // 2 hr tab hidden → logout
 
@@ -329,3 +329,4 @@ export default function App() {
     </div>
   );
 }
+

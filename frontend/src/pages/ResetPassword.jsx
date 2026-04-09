@@ -1,7 +1,7 @@
 // pages/ResetPassword.jsx
 import { useState, useEffect } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function ResetPassword({ setPage }) {
   const [stage,    setStage]    = useState("request"); // request | sent | reset | done

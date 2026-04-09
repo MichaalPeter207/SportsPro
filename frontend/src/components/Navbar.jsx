@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function Navbar({ currentPage, setPage, user, onLogout }) {
   const [menuOpen,  setMenuOpen]  = useState(false);

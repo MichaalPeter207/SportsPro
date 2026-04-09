@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 const ALL_ROLES   = ["fan", "coach", "analyst", "admin"];
 const ROLE_COLORS = { admin: "#ef4444", coach: "#6c63ff", analyst: "#3b82f6", fan: "#22c55e" };
@@ -342,3 +342,4 @@ export default function AdminPanel() {
     </div>
   );
 }
+

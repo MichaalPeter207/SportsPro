@@ -8,7 +8,7 @@
 
 import { useState, useRef } from "react";
 
-const API = "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function VerifyEmail({ setPage, verifyEmail }) {
   const [digits, setDigits]     = useState(["", "", "", "", "", ""]);

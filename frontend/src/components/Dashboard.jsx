@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function Dashboard({ initialTab = "standings" }) {
   const [standings,  setStandings]  = useState([]);
