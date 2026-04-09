@@ -22,14 +22,8 @@ def create_app():
     jwt.init_app(app)
     CORS(
         app,
-        resources={r"/api/*": {"origins": [
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "https://sports-pro-vm55.vercel.app",
-        ]}},
-        supports_credentials=True,
+        origins="*",
+        supports_credentials=False,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     )
