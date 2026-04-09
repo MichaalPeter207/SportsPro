@@ -16,7 +16,7 @@ import ResetPassword     from "./pages/ResetPassword";
 import VerifyEmail       from "./pages/VerifyEmail";
 import AdminPanel        from "./pages/AdminPanel";
 import ManagePage        from "./pages/ManagePage";
-import AnalyticsDashboard from "./pages/AnalyticsDashboard";
+import AnalyticsDashboard from "./pages/analyticsdashboard";
 import TournamentsPage   from "./pages/TournamentsPage";
 
 const BASE         = "http://localhost:5000/api";
