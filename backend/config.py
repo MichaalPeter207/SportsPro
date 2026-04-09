@@ -12,7 +12,7 @@ class Config:
     # Database
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        'postgresql://postgres:Ify??0000@localhost:5432/sports_league_db'
+        'postgresql://neondb_owner:npg_O9X0FPWKmMvD@ep-orange-bonus-ab2s0hyt.eu-west-2.aws.neon.tech/neondb?sslmode=require'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
