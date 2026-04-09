@@ -60,6 +60,10 @@ def create_app():
     def health():
         return jsonify({'status': 'Backend is running!', 'version': '1.0.0'})
 
+    @app.route('/')
+    def root():
+        return jsonify({'status': 'ok'})
+
     return app
 
 
@@ -69,3 +73,5 @@ if __name__ == '__main__':
     print(f"Visit: http://0.0.0.0:{port}/api/health")
     app = create_app()
     app.run(host="0.0.0.0", port=port, debug=os.environ.get("FLASK_DEBUG") == "1")
+
+
