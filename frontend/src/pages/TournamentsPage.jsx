@@ -1,4 +1,4 @@
-// =============================================================
+﻿// =============================================================
 //  pages/TournamentsPage.jsx
 //  Coach isolation: each coach sees only their own data
 //  Predictions: always shown on fixture cards
@@ -6,7 +6,7 @@
 // =============================================================
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const BASE = "http://localhost:5000/api";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 // Always read token fresh — avoids 422 stale token errors
 const getHeaders = () => {
