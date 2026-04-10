@@ -1005,6 +1005,14 @@ html, body {
   height: 280px;
 }
 
+/* Make Chart.js canvases fully responsive */
+.chart-container canvas,
+canvas.chartjs-render-monitor {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /* ============================================================
    PAGE HEADER
    ============================================================ */
@@ -1180,7 +1188,7 @@ html, body {
   .standings-table th { font-size: 0.6rem; padding: 0.5rem 0.6rem; }
   .standings-table td { font-size: 0.75rem; padding: 0.6rem 0.6rem; }
 
-  .chart-container { height: 140px; }
+  .chart-container { height: 220px; }
   .loading-center { padding: 2.5rem; }
 }
 
@@ -1189,9 +1197,7 @@ html, body {
     padding: 0.3rem !important;
     border-radius: 6px !important;
   }
-  .chart-container {
-    height: 80px !important;
-  }
+  .chart-container { height: 200px !important; }
   .dashboard-grid, .matches-grid, .players-grid, .tournament-card-grid, .tournament-highlight-cards {
     gap: 0.3rem !important;
   }
