@@ -5,6 +5,7 @@
 // =============================================================
 
 import { useState, useEffect, useRef } from "react";
+import { bgSportsPro } from "../styles/bgStyles";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -171,7 +172,7 @@ export default function AnalyticsDashboard() {
   );
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", color: "#fff", paddingBottom: "4rem" }}>
+    <div style={{ ...bgSportsPro, padding: "2rem 1.5rem", maxWidth: "980px", margin: "0 auto", minHeight: "100vh" }}>
 
       {/* Header */}
       <div style={{ marginBottom: "28px" }}>

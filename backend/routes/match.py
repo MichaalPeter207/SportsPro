@@ -457,9 +457,9 @@ def _auto_predict(match):
 
         pred = Prediction(
             match_id          = match.match_id,
-            home_win_prob     = home_p,
-            away_win_prob     = away_p,
-            draw_prob         = draw_p,
+            home_win_prob     = float(home_p),
+            away_win_prob     = float(away_p),
+            draw_prob         = float(draw_p),
             predicted_outcome = outcome,
             model_version     = version,
         )

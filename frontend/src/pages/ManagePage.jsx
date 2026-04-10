@@ -1,3 +1,4 @@
+import { bgSportsPro } from "../styles/bgStyles";
 // =============================================================
 //  pages/ManagePage.jsx
 //  Changes from original:
@@ -294,7 +295,7 @@ export default function ManagePage({ user }) {
   ];
 
   return (
-    <div style={{ padding:"2rem 1.5rem", maxWidth:"900px", margin:"0 auto" }}>
+    <div style={{ ...bgSportsPro, padding: "2rem 1.5rem", maxWidth: "900px", margin: "0 auto", minHeight: "100vh" }}>
 
       <div style={{ marginBottom:"24px" }}>
         <h1 className="page-title">⚙️ Management Panel</h1>

@@ -77,9 +77,9 @@ def _ensure_predictions(matches):
                 home_p, draw_p, away_p, outcome, version = predict_match(m, all_completed, perf_stats)
                 pred = Prediction(
                     match_id=m.match_id,
-                    home_win_prob=home_p,
-                    away_win_prob=away_p,
-                    draw_prob=draw_p,
+                    home_win_prob=float(home_p),
+                    away_win_prob=float(away_p),
+                    draw_prob=float(draw_p),
                     predicted_outcome=outcome,
                     model_version=version,
                 )
@@ -539,9 +539,10 @@ def generate_fixtures(tid):
         for m in created:
             try:
                 home_p, draw_p, away_p, outcome, version = predict_match(m, all_completed, perf_stats)
+                # Convert numpy types to Python floats for PostgreSQL compatibility
                 pred = Prediction(
-                    match_id=m.match_id, home_win_prob=home_p,
-                    away_win_prob=away_p, draw_prob=draw_p,
+                    match_id=m.match_id, home_win_prob=float(home_p),
+                    away_win_prob=float(away_p), draw_prob=float(draw_p),
                     predicted_outcome=outcome, model_version=version,
                 )
                 db.session.add(pred)
@@ -613,28 +614,34 @@ def get_rounds(tid):
 # -----------------------------------------------------------
 @tournament_bp.route('/<int:tid>/matches', methods=['GET'])
 def tournament_matches(tid):
-    t = Tournament.query.get_or_404(tid)
+    try:
+        # Ensure clean session state
+        db.session.rollback()
+        db.session.expunge_all()
+        
+        t = Tournament.query.get_or_404(tid)
+        matches = Match.query.filter_by(tournament_id=tid).order_by(Match.match_date).all()
+        
+        # Ensure predictions exist for all scheduled matches
+        _ensure_predictions(matches)
+        
+        # Clean and refresh
+        db.session.expunge_all()
+        matches = Match.query.filter_by(tournament_id=tid).order_by(Match.match_date).all()
+        
+        result = []
+        for m in matches:
+            try:
+                md = m.to_dict()
+                if m.prediction:
+                    md['prediction'] = m.prediction.to_dict()
+                result.append(md)
+            except Exception as serialization_err:
+                # Skip matches that can't be serialized
+                continue
 
-    # Primary: matches linked by tournament_id FK
-    linked = {m.match_id: m for m in t.matches}
-
-    # Fallback: also include matches with matching tournament_title
-    if t.title:
-        title_matches = Match.query.filter(
-            Match.tournament_title.ilike(f'%{t.title}%')
-        ).all()
-        for m in title_matches:
-            if m.match_id not in linked:
-                linked[m.match_id] = m
-
-    matches = sorted(linked.values(), key=lambda x: x.match_date)
-    _ensure_predictions(matches)
-
-    result = []
-    for m in matches:
-        md = m.to_dict()
-        if m.prediction:
-            md['prediction'] = m.prediction.to_dict()
-        result.append(md)
-
-    return jsonify({'tournament': t.to_dict(), 'matches': result}), 200
+        return jsonify({'tournament': t.to_dict(), 'matches': result}), 200
+    except Exception as e:
+        db.session.rollback()
+        import traceback
+        return jsonify({'error': str(e), 'type': type(e).__name__}), 500

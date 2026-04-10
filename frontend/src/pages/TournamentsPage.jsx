@@ -6,7 +6,7 @@
 // =============================================================
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const BASE = "http://localhost:5000/api";
 
 // Always read token fresh — avoids 422 stale token errors
 const getHeaders = () => {
@@ -1338,4 +1338,3 @@ function Spinner() {
     </div>
   );
 }
-

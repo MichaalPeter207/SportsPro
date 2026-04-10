@@ -150,17 +150,17 @@ def predict_match():
     # Save or update prediction in database
     existing = Prediction.query.filter_by(match_id=match_id).first()
     if existing:
-        existing.home_win_prob     = round(home_prob, 4)
-        existing.away_win_prob     = round(away_prob, 4)
-        existing.draw_prob         = round(draw_prob, 4)
+        existing.home_win_prob     = float(round(home_prob, 4))
+        existing.away_win_prob     = float(round(away_prob, 4))
+        existing.draw_prob         = float(round(draw_prob, 4))
         existing.predicted_outcome = outcome
         pred = existing
     else:
         pred = Prediction(
             match_id          = match_id,
-            home_win_prob     = round(home_prob, 4),
-            away_win_prob     = round(away_prob, 4),
-            draw_prob         = round(draw_prob, 4),
+            home_win_prob     = float(round(home_prob, 4)),
+            away_win_prob     = float(round(away_prob, 4)),
+            draw_prob         = float(round(draw_prob, 4)),
             predicted_outcome = outcome,
         )
         db.session.add(pred)

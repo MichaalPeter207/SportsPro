@@ -1,3 +1,7 @@
+/* Ensure no white background leaks from containers */
+#root, .App, .main-content, .container {
+  background: transparent !important;
+}
 /* =============================================================
    main.css — SportsPro League Management System
    Premium dark theme inspired by Premier League / UEFA
@@ -5,11 +9,15 @@
 
 :root {
   /* Core Colors */
-  --bg-primary:    #0a0e1a;
+  --bg-primary:    #0a0a14;
   --bg-secondary:  #0f1628;
   --bg-card:       #141c2e;
   --bg-card-hover: #1a2440;
   --bg-elevated:   #1e2a42;
+
+  /* Sports Platform Background Overlays */
+  --bg-sport-overlay: url('data:image/svg+xml;utf8,<svg width="100%25" height="100%25" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="%237c3aed" stroke-opacity="0.08" stroke-width="8"><ellipse cx="60%25" cy="20%25" rx="320" ry="120"/><ellipse cx="30%25" cy="80%25" rx="180" ry="60"/><ellipse cx="80%25" cy="60%25" rx="120" ry="40"/></g><g fill="none" stroke="%2306b6d4" stroke-opacity="0.07" stroke-width="6"><circle cx="90%25" cy="30%25" r="90"/><circle cx="20%25" cy="70%25" r="60"/></g></svg>');
+  --bg-sport-gradient: linear-gradient(120deg, rgba(34,197,94,0.10) 0%, rgba(59,130,246,0.10) 100%);
 
   /* Accent Colors */
   --accent-purple: #7c3aed;
@@ -51,12 +59,21 @@
 
 html { scroll-behavior: smooth; }
 
-body {
-  font-family: var(--font-body);
-  background: var(--bg-primary);
-  color: var(--text-primary);
+html, body {
   min-height: 100vh;
+  background-color: #0a0a14;
+  background-image:
+    radial-gradient(900px 400px at 15% -10%, rgba(34,197,94,0.22), transparent 60%),
+    radial-gradient(800px 500px at 110% 0%, rgba(59,130,246,0.18), transparent 60%),
+    linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08)),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><g fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="6"><circle cx="900" cy="260" r="180"/><path d="M900 80 L980 150 L940 250 L860 250 L820 150 Z"/><path d="M900 440 L980 360 L940 260 L860 260 L820 360 Z"/><path d="M720 260 L800 340 L880 300 L880 220 L800 180 Z"/><path d="M1080 260 L1000 340 L920 300 L920 220 L1000 180 Z"/><circle cx="300" cy="620" r="120"/><path d="M300 520 L360 560 L340 620 L260 620 L240 560 Z"/><path d="M300 720 L360 680 L340 620 L260 620 L240 680 Z"/></g></svg>');
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  background-position: left top, right top, center, center;
+  background-size: auto, auto, cover, 1200px 800px;
+  position: relative;
   overflow-x: hidden;
+  color: var(--text-primary);
+  font-family: var(--font-body);
 }
 
 /* ---- Scrollbar ---- */
@@ -200,12 +217,17 @@ body {
 .main-content {
   margin-top: var(--nav-height);
   min-height: calc(100vh - var(--nav-height));
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100vw;
 }
 
 .container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
 }
 
 /* ============================================================
@@ -833,7 +855,15 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: var(--bg-primary);
+  background-color: #0a0a14;
+  background-image:
+    radial-gradient(900px 400px at 15% -10%, rgba(34,197,94,0.22), transparent 60%),
+    radial-gradient(800px 500px at 110% 0%, rgba(59,130,246,0.18), transparent 60%),
+    linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08)),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><g fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="6"><circle cx="900" cy="260" r="180"/><path d="M900 80 L980 150 L940 250 L860 250 L820 150 Z"/><path d="M900 440 L980 360 L940 260 L860 260 L820 360 Z"/><path d="M720 260 L800 340 L880 300 L880 220 L800 180 Z"/><path d="M1080 260 L1000 340 L920 300 L920 220 L1000 180 Z"/><circle cx="300" cy="620" r="120"/><path d="M300 520 L360 560 L340 620 L260 620 L240 560 Z"/><path d="M300 720 L360 680 L340 620 L260 620 L240 680 Z"/></g></svg>');
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  background-position: left top, right top, center, center;
+  background-size: auto, auto, cover, 1200px 800px;
   position: relative;
   overflow: hidden;
 }
@@ -1040,7 +1070,7 @@ body {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
-  .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard-grid { grid-template-columns: 1fr; gap: 0.7rem; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -1060,9 +1090,37 @@ body {
   .nav-toggle { display: flex; }
   .hero-title { font-size: 2.5rem; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
-  .matches-grid { grid-template-columns: 1fr; }
-  .players-grid { grid-template-columns: repeat(2, 1fr); }
-  .container { padding: 0 1rem; }
+  .matches-grid { grid-template-columns: 1fr !important; gap: 0.7rem !important; }
+  .players-grid { grid-template-columns: 1fr 1fr !important; gap: 0.7rem !important; }
+  .container { padding: 0 0.5rem !important; }
+  .tournament-detail-hero, .tournament-detail-section {
+    padding: 1rem 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .tournament-tabs {
+    flex-wrap: wrap;
+    gap: 0.2rem !important;
+    padding: 0.2rem !important;
+  }
+  .tournament-card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.7rem !important;
+  }
+  .tournament-card, .card, .match-card {
+    padding: 0.7rem !important;
+    border-radius: 8px !important;
+  }
+  .mini-table th, .mini-table td {
+    font-size: 0.7rem !important;
+    padding: 0.4rem 0.4rem !important;
+  }
+  .tournament-highlight-cards {
+    grid-template-columns: 1fr !important;
+    gap: 0.7rem !important;
+  }
+  .tournament-detail-hero h1, .tournament-detail-hero .SecTitle {
+    font-size: 1.1rem !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1093,16 +1151,16 @@ body {
   .tab { padding: 0.35rem 0.7rem; font-size: 0.7rem; }
 
   .form-input, .form-select { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
-  .form-label { font-size: 0.65rem; }
-
-  .hero { padding: 3rem 0 2rem; }
+    .matches-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+    .match-card { padding: 0.6rem; border-radius: 8px; }
+    .match-team-badge { width: 28px; height: 28px; font-size: 0.7rem; }
   .hero-title { font-size: 2.1rem; }
   .hero-subtitle { font-size: 0.95rem; }
   .btn-hero-primary, .btn-hero-secondary { padding: 0.7rem 1.4rem; font-size: 0.8rem; }
 
-  .stats-bar { grid-template-columns: 1fr 1fr; }
-  .stat-item { padding: 1rem; }
-  .stat-number { font-size: 1.6rem; }
+    .players-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .player-card { padding: 0.6rem; border-radius: 8px; }
+    .player-avatar { width: 32px; height: 32px; font-size: 0.7rem; }
   .stat-label { font-size: 0.65rem; }
 
   .matches-grid { grid-template-columns: 1fr; }
@@ -1122,13 +1180,40 @@ body {
   .standings-table th { font-size: 0.6rem; padding: 0.5rem 0.6rem; }
   .standings-table td { font-size: 0.75rem; padding: 0.6rem 0.6rem; }
 
-  .chart-container { height: 220px; }
+  .chart-container { height: 140px; }
   .loading-center { padding: 2.5rem; }
 }
 
 @media (max-width: 480px) {
+  .card, .match-card, .player-card, .tournament-card {
+    padding: 0.3rem !important;
+    border-radius: 6px !important;
+  }
+  .chart-container {
+    height: 80px !important;
+  }
+  .dashboard-grid, .matches-grid, .players-grid, .tournament-card-grid, .tournament-highlight-cards {
+    gap: 0.3rem !important;
+  }
   .stats-bar { grid-template-columns: 1fr 1fr; }
   .players-grid { grid-template-columns: 1fr 1fr; }
-  .hero { padding: 2.5rem 0 1.5rem; }
-  .container { padding: 0 0.75rem; }
+  .tournament-card-grid, .matches-grid { grid-template-columns: 1fr !important; }
+  .hero { padding: 1.2rem 0 0.7rem; }
+  .container { padding: 0 0.3rem !important; }
+  .tournament-detail-hero, .tournament-detail-section {
+    padding: 0.5rem 0.2rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  .tournament-tabs {
+    flex-wrap: wrap;
+    gap: 0.1rem !important;
+    padding: 0.1rem !important;
+  }
+  .mini-table th, .mini-table td {
+    font-size: 0.6rem !important;
+    padding: 0.2rem 0.2rem !important;
+  }
+  .tournament-detail-hero h1, .tournament-detail-hero .SecTitle {
+    font-size: 0.95rem !important;
+  }
 }

@@ -1,3 +1,4 @@
+
 // =============================================================
 //  pages/Login.jsx
 //  - If user is unverified → redirect to verify-email page
@@ -6,6 +7,7 @@
 // =============================================================
 
 import { useState } from "react";
+import { bgSportsPro } from "../styles/bgStyles";
 
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -84,7 +86,7 @@ export default function Login({ setPage, setUser, setVerifyEmail }) {
   // -----------------------------------------------------------
   if (view === "sent") {
     return (
-      <div className="auth-page">
+      <div className="auth-page" style={{ ...bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
         <div className="auth-card" style={{ textAlign: "center" }}>
           <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📧</div>
           <div className="auth-title">Check Your Email</div>
@@ -109,7 +111,7 @@ export default function Login({ setPage, setUser, setVerifyEmail }) {
   // -----------------------------------------------------------
   if (view === "forgot") {
     return (
-      <div className="auth-page">
+      <div className="auth-page" style={{ ...bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
         <div className="auth-card">
           <div className="auth-logo">🔑</div>
           <div className="auth-title">Reset Password</div>
@@ -146,7 +148,7 @@ export default function Login({ setPage, setUser, setVerifyEmail }) {
   // LOGIN FORM
   // -----------------------------------------------------------
   return (
-    <div className="auth-page">
+    <div className="auth-page" style={{ ...bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
       <div className="auth-card">
         <div className="auth-logo">SP</div>
         <div className="auth-title">Welcome Back</div>

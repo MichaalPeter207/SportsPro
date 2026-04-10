@@ -1,5 +1,6 @@
 // pages/ResetPassword.jsx
 import { useState, useEffect } from "react";
+import { bgSportsPro } from "../styles/bgStyles";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -90,7 +91,7 @@ export default function ResetPassword({ setPage }) {
   };
 
   return (
-    <div style={S.wrap}>
+    <div style={{ ...S.wrap, ...bgSportsPro, minHeight: "100vh", width: "100vw", padding: 0, margin: 0 }}>
       <div style={S.box}>
         {/* Logo */}
         <div style={S.logo}>

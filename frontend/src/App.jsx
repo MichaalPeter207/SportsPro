@@ -93,7 +93,7 @@ export default function App() {
       .finally(() => setHydrated(true));
   }, []);
 
-  // ── Feedback prompt after 2 minutes of use ────────────────────────────────
+  // ── Feedback prompt after 3 minutes of use ────────────────────────────────
   useEffect(() => {
     if (!user) {
       clearTimeout(feedbackTimer.current);
@@ -102,12 +102,13 @@ export default function App() {
     const submitted = localStorage.getItem("feedback_submitted") === "1";
     const lastPrompt = Number(localStorage.getItem("feedback_prompted_at") || "0");
     const now = Date.now();
-    if (submitted || (now - lastPrompt) < 24 * 60 * 60 * 1000) return;
+    if (submitted) return;
+    if ((now - lastPrompt) < 24 * 60 * 60 * 1000) return;
     clearTimeout(feedbackTimer.current);
     feedbackTimer.current = setTimeout(() => {
       localStorage.setItem("feedback_prompted_at", String(Date.now()));
       setShowFeedback(true);
-    }, 2 * 60 * 1000);
+    }, 3 * 60 * 1000);
     return () => clearTimeout(feedbackTimer.current);
   }, [user]);
 
@@ -262,7 +263,10 @@ export default function App() {
 
             <div style={{ display:"flex", gap:"10px", justifyContent:"flex-end" }}>
               <button
-                onClick={() => setShowFeedback(false)}
+                onClick={() => {
+                  setShowFeedback(false);
+                  // Do NOT set feedback_submitted, so popup can reappear after 24h
+                }}
                 style={{
                   padding:"8px 14px", background:"transparent", border:"1px solid #ffffff18",
                   color:"#777", borderRadius:"8px", cursor:"pointer", fontSize:"12px"

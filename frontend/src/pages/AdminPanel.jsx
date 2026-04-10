@@ -4,6 +4,7 @@
 // =============================================================
 
 import { useState, useEffect } from "react";
+import { bgSportsPro } from "../styles/bgStyles";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -114,7 +115,7 @@ export default function AdminPanel() {
   );
 
   return (
-    <div style={{ padding: "2rem 1.5rem", maxWidth: "980px", margin: "0 auto" }}>
+    <div style={{ ...bgSportsPro, padding: "2rem 1.5rem", maxWidth: "980px", margin: "0 auto", minHeight: "100vh" }}>
 
       {/* Header */}
       <div style={{ marginBottom: "24px" }}>

@@ -1,9 +1,11 @@
+
 // =============================================================
 //  pages/Register.jsx
 //  After successful registration → redirects to verify-email page
 // =============================================================
 
 import { useState } from "react";
+import { bgSportsPro } from "../styles/bgStyles";
 
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -76,7 +78,7 @@ export default function Register({ setPage, setVerifyEmail }) {
   );
 
   return (
-    <div className="auth-page">
+    <div className="auth-page" style={{ ...bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
       <div className="auth-card" style={{ maxWidth: 480 }}>
         <div className="auth-logo">SP</div>
         <div className="auth-title">Create Account</div>

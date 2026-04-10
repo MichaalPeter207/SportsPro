@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
-from extensions import db, bcrypt, jwt
+from extensions import db, bcrypt, jwt, migrate
 
 
 def create_app():
@@ -20,6 +20,7 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    migrate.init_app(app, db)
     CORS(
         app,
         origins="*",
