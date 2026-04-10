@@ -124,7 +124,7 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
   };
 
   return (
-    <div className="auth-page" style={{ ...require("../styles/bgStyles").bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
+    <div className="auth-page" style={{ ...bgSportsPro, padding: "2rem 1.5rem", minHeight: "100vh" }}>
       <div className="auth-card" style={{ maxWidth: 420, textAlign: "center" }}>
 
         {/* Icon */}
