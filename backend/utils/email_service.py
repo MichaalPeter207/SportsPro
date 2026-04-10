@@ -9,6 +9,10 @@ from email.mime.text      import MIMEText
 from flask import current_app
 
 
+def _frontend_url():
+    return current_app.config.get('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+
+
 def _send(to_email: str, subject: str, html_body: str):
     """Internal helper — sends an HTML email via Gmail SMTP."""
     try:
@@ -65,6 +69,7 @@ def send_verification_email(to_email: str, username: str, code: str):
 # -----------------------------------------------------------
 def send_role_upgrade_email(to_email: str, username: str,
                              old_roles: list, new_roles: list):
+    base_url = _frontend_url()
     old_str = ", ".join(r.capitalize() for r in old_roles) or "Fan"
     new_str = ", ".join(r.capitalize() for r in new_roles)
 
@@ -108,7 +113,7 @@ def send_role_upgrade_email(to_email: str, username: str,
         <p style="color:#ccc;">With your new role you can now:</p>
         <ul style="color:#ccc;padding-left:20px;">{bullets}</ul>
         <div style="text-align:center;margin-top:28px;">
-          <a href="http://localhost:3000"
+          <a href="{base_url}"
              style="background:linear-gradient(135deg,#6c63ff,#3b82f6);
                     color:#fff;padding:14px 32px;border-radius:8px;
                     text-decoration:none;font-weight:bold;font-size:15px;">
@@ -154,7 +159,8 @@ def send_admin_activation_email(to_email: str, username: str, activation_code: s
 # SEND PASSWORD RESET EMAIL
 # -----------------------------------------------------------
 def send_password_reset_email(to_email: str, username: str, token: str):
-    reset_url = f"http://localhost:3000?token={token}"
+    base_url  = _frontend_url()
+    reset_url = f"{base_url}?token={token}"
     subject   = "SportsPro – Password Reset Request"
     html = f"""
     <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;
