@@ -615,20 +615,27 @@ def get_rounds(tid):
 @tournament_bp.route('/<int:tid>/matches', methods=['GET'])
 def tournament_matches(tid):
     try:
+        from sqlalchemy.orm import joinedload
+
         # Ensure clean session state
         db.session.rollback()
-        db.session.expunge_all()
-        
-        t = Tournament.query.get_or_404(tid)
-        matches = Match.query.filter_by(tournament_id=tid).order_by(Match.match_date).all()
+
+        # Eager-load relationships to avoid DetachedInstanceError
+        t = Tournament.query.options(joinedload(Tournament.season)).get_or_404(tid)
+        matches = (
+            Match.query.options(
+                joinedload(Match.home_team),
+                joinedload(Match.away_team),
+                joinedload(Match.prediction),
+            )
+            .filter_by(tournament_id=tid)
+            .order_by(Match.match_date)
+            .all()
+        )
         
         # Ensure predictions exist for all scheduled matches
         _ensure_predictions(matches)
-        
-        # Clean and refresh
-        db.session.expunge_all()
-        matches = Match.query.filter_by(tournament_id=tid).order_by(Match.match_date).all()
-        
+
         result = []
         for m in matches:
             try:
