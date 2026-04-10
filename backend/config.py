@@ -22,7 +22,7 @@ class Config:
     # Flask
     DEBUG      = os.getenv('DEBUG', 'True') == 'True'
     SECRET_KEY = os.getenv('SECRET_KEY', 'flask-secret-key-2024')
-        FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+    FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://sports-pro-vm55.vercel.app')
 
     # -----------------------------------------------------------
     # ADMIN ACTIVATION CODE
