@@ -6,7 +6,7 @@
 // =============================================================
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const BASE = "http://localhost:5000/api";
 
 // Always read token fresh — avoids 422 stale token errors
 const getHeaders = () => {
@@ -348,7 +348,7 @@ function TournamentDetail({ t, user, isAdmin, isCoach, onBack, flash }) {
 
       {/* Highlight cards */}
       {(topScorer||standings.length>0) && (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"12px", marginBottom:"24px" }}>
+        <div className="tp-grid tp-grid-cards" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"12px", marginBottom:"24px" }}>
           {standings[0] && <HighlightCard icon="🥇" label="League Leader" value={standings[0].team} sub={`${standings[0].pts} pts · ${standings[0].w}W ${standings[0].d}D ${standings[0].l}L`} color={C.yellow} />}
           {topScorer && topScorer.goals>0 && <HighlightCard icon="⚽" label="Top Scorer" value={topScorer.player_name} sub={`${topScorer.goals} goals · ${topScorer.team_name}`} color={C.green} />}
           {topAssist && topAssist.assists>0 && <HighlightCard icon="🎯" label="Top Assist" value={topAssist.player_name} sub={`${topAssist.assists} assists · ${topAssist.team_name}`} color={C.cyan} />}
@@ -519,14 +519,14 @@ function OverviewTab({ matches, standings, completed, scheduled, stats }) {
       </div>
 
       {/* 4 charts */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"20px" }}>
+      <div className="tp-grid tp-grid-charts" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"20px" }}>
         <Card style={{ position:"relative", minHeight:"180px" }}><canvas ref={goalsRef} />{!completed.length&&<ChartEmpty />}</Card>
         <Card style={{ position:"relative", minHeight:"180px" }}><canvas ref={outcomeRef} />{!completed.length&&<ChartEmpty />}</Card>
         <Card style={{ position:"relative", minHeight:"180px" }}><canvas ref={formRef} />{completed.length<2&&<ChartEmpty text="Need 2+ completed matches" />}</Card>
         <Card style={{ position:"relative", minHeight:"180px" }}><canvas ref={scorerRef} />{!stats.length&&<ChartEmpty text="No player stats yet" />}</Card>
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:"20px" }}>
+      <div className="tp-grid tp-grid-split" style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:"20px" }}>
         <div>
           {recent.length>0 && (<><SecTitle>⚽ Recent Results</SecTitle><div style={{ display:"flex", flexDirection:"column", gap:"10px", marginBottom:"20px" }}>{recent.map(m=><MatchCard key={m.match_id} m={m} />)}</div></>)}
           {scheduled.length>0 && (<><SecTitle>📅 Next Fixtures</SecTitle><div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>{scheduled.slice(0,2).map(m=><MatchCard key={m.match_id} m={m} />)}</div></>)}
@@ -607,7 +607,7 @@ function StandingsTab({ standings, completed }) {
   if (!standings.length) return <Empty text="No matches completed yet." />;
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"16px" }}>
+      <div className="tp-grid tp-grid-charts" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"16px" }}>
         <Card><canvas ref={ptRef} /></Card>
         <Card><canvas ref={gdRef} /></Card>
       </div>
@@ -762,7 +762,7 @@ function StatsTab({ stats }) {
   if (!stats.length) return <Empty text="No player stats yet. Enter stats via ⚙️ Manage → Stats." />;
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"16px" }}>
+      <div className="tp-grid tp-grid-charts" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"16px" }}>
         <Card><canvas ref={goalsRef} /></Card>
         <Card><canvas ref={ratingRef} /></Card>
       </div>
@@ -894,7 +894,7 @@ function ManageTab({ t, coaches, isAdmin, isOwner, onRevoke, onDataChange }) {
 
       {/* TEAMS */}
       {manSub==="teams" && (
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px" }}>
+        <div className="tp-grid tp-grid-split" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px" }}>
           <div>
             <SecTitle>✅ Registered Teams ({teams.registered.length})</SecTitle>
             {!teams.registered.length ? <Empty text="No teams yet. Add from the right panel." /> : (
@@ -944,7 +944,7 @@ function ManageTab({ t, coaches, isAdmin, isOwner, onRevoke, onDataChange }) {
                 ⚠️ You need at least 2 teams. Go to Teams tab to add teams.
               </div>
             )}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"12px", marginBottom:"16px" }}>
+            <div className="tp-grid tp-grid-form" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"12px", marginBottom:"16px" }}>
               {[
                 {label:"Start Date *", type:"date", key:"start_date", placeholder:""},
                 {label:"Days Between Rounds", type:"number", key:"days_between_rounds", placeholder:"7"},
@@ -1210,7 +1210,7 @@ function CreateModal({ onClose, onCreated, flash }) {
       <MF label="Tournament Title *" value={form.title} onChange={v=>setForm({...form,title:v})} placeholder="e.g. First Semester Football Cup" />
       <MF label="Description" value={form.description} onChange={v=>setForm({...form,description:v})} placeholder="Optional" />
       <MF label="Season Name" value={form.season_name} onChange={v=>setForm({...form,season_name:v})} placeholder={`e.g. Season ${new Date().getFullYear()}`} />
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
+      <div className="tp-grid tp-grid-form" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
         <MF label="Start Date" type="date" value={form.start_date} onChange={v=>setForm({...form,start_date:v})} />
         <MF label="End Date"   type="date" value={form.end_date}   onChange={v=>setForm({...form,end_date:v})} />
       </div>

@@ -1,4 +1,4 @@
-// =============================================================
+﻿// =============================================================
 //  App.jsx
 //  - Unauthenticated users see landing page only (no nav links)
 //  - Session persists on refresh via /api/auth/me
@@ -20,13 +20,17 @@ import AnalyticsDashboard from "./pages/analyticsdashboard";
 import TournamentsPage   from "./pages/TournamentsPage";
 
 const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
-const IDLE_MS      = 30 * 60 * 1000;   // 30 min idle → logout
-const HIDDEN_MS    = 2  * 60 * 60 * 1000; // 2 hr tab hidden → logout
+const IDLE_MS      = 30 * 60 * 1000;   // 30 min idle â†’ logout
+const HIDDEN_MS    = 2  * 60 * 60 * 1000; // 2 hr tab hidden â†’ logout
 
 export default function App() {
-  const [page,        setPage]        = useState(
-    window.location.search.includes("token") ? "reset-password" : "home"
-  );
+  const initialPage = (() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("token")) return "reset-password";
+    if (params.has("verify") || params.has("email")) return "verify-email";
+    return "home";
+  })();
+  const [page,        setPage]        = useState(initialPage);
   const [user,        setUser]        = useState(null);
   const [hydrated,    setHydrated]    = useState(false);
   const [verifyEmail, setVerifyEmail] = useState("");
@@ -36,11 +40,17 @@ export default function App() {
   const [feedbackSending, setFeedbackSending] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState("");
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const em = params.get("email");
+    if (em) setVerifyEmail(em);
+  }, []);
+
   const idleTimer   = useRef(null);
   const hiddenAt    = useRef(null);
   const feedbackTimer = useRef(null);
 
-  // ── Logout ────────────────────────────────────────────────
+  // â”€â”€ Logout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleLogout = useCallback((reason = "") => {
     localStorage.removeItem("token");
     setUser(null);
@@ -48,7 +58,7 @@ export default function App() {
     if (reason) console.info("Auto-logout:", reason);
   }, []);
 
-  // Global 401 handler — catches expired tokens from any fetch
+  // Global 401 handler â€” catches expired tokens from any fetch
   useEffect(() => {
     const origFetch = window.fetch;
     window._fetchPatched = true;
@@ -73,7 +83,7 @@ export default function App() {
     return () => { if (window._fetchPatched) window.fetch = origFetch; };
   }, []);
 
-  // ── Restore session on page refresh ──────────────────────
+  // â”€â”€ Restore session on page refresh â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) { setHydrated(true); return; }
@@ -93,7 +103,7 @@ export default function App() {
       .finally(() => setHydrated(true));
   }, []);
 
-  // ── Feedback prompt after 3 minutes of use ────────────────────────────────
+  // â”€â”€ Feedback prompt after 3 minutes of use â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     if (!user) {
       clearTimeout(feedbackTimer.current);
@@ -112,7 +122,7 @@ export default function App() {
     return () => clearTimeout(feedbackTimer.current);
   }, [user]);
 
-  // ── Idle logout ───────────────────────────────────────────
+  // â”€â”€ Idle logout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const resetIdle = useCallback(() => {
     if (!user) return;
     clearTimeout(idleTimer.current);
@@ -130,7 +140,7 @@ export default function App() {
     };
   }, [user, resetIdle]);
 
-  // ── Tab-hidden logout ─────────────────────────────────────
+  // â”€â”€ Tab-hidden logout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const onVisibility = () => {
       if (!user) return;
@@ -147,7 +157,7 @@ export default function App() {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, [user, handleLogout]);
 
-  // ── Role helpers ──────────────────────────────────────────
+  // â”€â”€ Role helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const roles          = user?.roles?.length ? user.roles : (user?.role ? [user.role] : []);
   const isAdminOrCoach = roles.includes("admin") || roles.includes("coach")
                          || user?.role === "admin" || user?.role === "coach";
@@ -158,13 +168,13 @@ export default function App() {
     return el;
   };
 
-  // ── Auth pages (no navbar) ─────────────────────────────────
+  // â”€â”€ Auth pages (no navbar) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const authPages = ["login","register","verify-email","reset-password"];
   const hideNavbar = authPages.includes(page) || !user;
 
   if (!hydrated) return null; // wait for session restore
 
-  // ── Guest: only show landing page ────────────────────────
+  // â”€â”€ Guest: only show landing page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (!user) {
     return (
       <main>
@@ -177,7 +187,7 @@ export default function App() {
     );
   }
 
-  // ── Authenticated: full app ───────────────────────────────
+  // â”€â”€ Authenticated: full app â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const renderPage = () => {
     switch (page) {
       case "tournaments":
@@ -218,9 +228,9 @@ export default function App() {
             width:"min(520px,92vw)", background:"#12122b", border:"1px solid #ffffff18",
             borderRadius:"16px", padding:"22px 24px", color:"#fff"
           }}>
-            <div style={{ fontWeight:"800", fontSize:"18px", marginBottom:"6px" }}>We’d love your feedback</div>
+            <div style={{ fontWeight:"800", fontSize:"18px", marginBottom:"6px" }}>Weâ€™d love your feedback</div>
             <div style={{ color:"#777", fontSize:"12px", marginBottom:"16px" }}>
-              How’s your experience so far? This helps us improve.
+              Howâ€™s your experience so far? This helps us improve.
             </div>
 
             <div style={{ marginBottom:"14px" }}>
@@ -250,7 +260,7 @@ export default function App() {
                 value={feedbackText}
                 onChange={e=>setFeedbackText(e.target.value)}
                 rows={4}
-                placeholder="Tell us what’s working or what’s missing..."
+                placeholder="Tell us whatâ€™s working or whatâ€™s missing..."
                 style={{
                   width:"100%", background:"#0f0f1a", border:"1px solid #ffffff18",
                   borderRadius:"10px", padding:"10px 12px", color:"#fff", fontSize:"13px",

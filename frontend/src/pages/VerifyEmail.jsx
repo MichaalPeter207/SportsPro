@@ -11,7 +11,9 @@ import { useState, useRef } from "react";
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function VerifyEmail({ setPage, verifyEmail }) {
-  const [email, setEmail]       = useState(verifyEmail || "");
+  const params = new URLSearchParams(window.location.search);
+  const qpEmail = params.get("email") || "";
+  const [email, setEmail]       = useState(verifyEmail || qpEmail || "");
   const [digits, setDigits]     = useState(["", "", "", "", "", ""]);
   const [error, setError]       = useState("");
   const [success, setSuccess]   = useState("");
@@ -65,6 +67,8 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
       setError("Please enter the full 6-digit code."); return;
     }
 
+    if (!email) { setError("Please enter your email address."); return; }
+
     setLoading(true);
     try {
       const res  = await fetch(`${API}/auth/verify-code`, {
@@ -95,6 +99,8 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
   // Resend code
   // -----------------------------------------------------------
   const handleResend = async () => {
+    if (!email) { setError("Please enter your email address."); return; }
+
     setResending(true);
     setError("");
     setResent(false);
@@ -143,7 +149,7 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
           {email || "your email address"}
         </div>
 
-        {!verifyEmail && (
+        {!verifyEmail && !qpEmail && (
           <div style={{ marginBottom: "1rem" }}>
             <div className="form-label" style={{ textAlign: "left" }}>Email</div>
             <input

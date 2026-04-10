@@ -53,7 +53,12 @@ export default function Register({ setPage, setVerifyEmail }) {
       if (!res.ok) { setError(data.error || "Registration failed"); return; }
 
       // Pass the registered email to the verify page and navigate there
-      setVerifyEmail(data.email || form.email);
+      const email = data.email || form.email;
+      setVerifyEmail(email);
+      const url = new URL(window.location.href);
+      url.searchParams.set("verify","1");
+      url.searchParams.set("email", email);
+      window.history.replaceState({}, "", url);
       setPage("verify-email");
 
     } catch {

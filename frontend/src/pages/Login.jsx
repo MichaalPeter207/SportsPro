@@ -40,6 +40,10 @@ export default function Login({ setPage, setUser, setVerifyEmail }) {
         // If unverified, redirect to verify page with their email
         if (data.unverified && data.email) {
           setVerifyEmail(data.email);
+          const url = new URL(window.location.href);
+          url.searchParams.set("verify","1");
+          url.searchParams.set("email", data.email);
+          window.history.replaceState({}, "", url);
           setPage("verify-email");
           return;
         }
