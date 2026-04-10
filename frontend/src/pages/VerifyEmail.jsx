@@ -11,6 +11,7 @@ import { useState, useRef } from "react";
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export default function VerifyEmail({ setPage, verifyEmail }) {
+  const [email, setEmail]       = useState(verifyEmail || "");
   const [digits, setDigits]     = useState(["", "", "", "", "", ""]);
   const [error, setError]       = useState("");
   const [success, setSuccess]   = useState("");
@@ -69,7 +70,7 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
       const res  = await fetch(`${API}/auth/verify-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: verifyEmail, code }),
+        body: JSON.stringify({ email, code }),
       });
       const data = await res.json();
 
@@ -101,7 +102,7 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
       const res  = await fetch(`${API}/auth/resend-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: verifyEmail }),
+        body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Failed to resend code."); return; }
@@ -139,8 +140,21 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
           marginBottom: "1.75rem",
           wordBreak: "break-all",
         }}>
-          {verifyEmail || "your email address"}
+          {email || "your email address"}
         </div>
+
+        {!verifyEmail && (
+          <div style={{ marginBottom: "1rem" }}>
+            <div className="form-label" style={{ textAlign: "left" }}>Email</div>
+            <input
+              type="email"
+              className="form-input"
+              placeholder="your@email.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </div>
+        )}
 
         {/* Alerts */}
         {error   && <div className="alert alert-error"   style={{ textAlign:"left" }}>⚠ {error}</div>}

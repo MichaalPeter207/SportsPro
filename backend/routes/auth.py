@@ -41,11 +41,13 @@ def register():
         if not data.get(field):
             return jsonify({'error': f'{field} is required'}), 400
 
-    # Case-insensitive duplicate check
-    if User.query.filter(func.lower(User.username) == data['username'].strip().lower()).first():
-        return jsonify({'error': 'Username already taken'}), 409
-    if User.query.filter(func.lower(User.email) == data['email'].strip().lower()).first():
-        return jsonify({'error': 'Email already registered'}), 409
+    # Case-insensitive duplicate check (with reactivation support)
+    existing_by_username = User.query.filter(
+        func.lower(User.username) == data['username'].strip().lower()
+    ).first()
+    existing_by_email = User.query.filter(
+        func.lower(User.email) == data['email'].strip().lower()
+    ).first()
 
     requested_role  = data.get('role', 'fan')
     activation_code = data.get('activation_code', '').strip()
@@ -60,6 +62,42 @@ def register():
 
     code    = str(random.randint(100000, 999999))
     expires = datetime.utcnow() + timedelta(minutes=10)
+
+    # Reactivate if user exists but is deactivated
+    existing = existing_by_username or existing_by_email
+    if existing and not existing.is_active:
+        existing.username            = data['username'].strip()
+        existing.email               = data['email'].strip().lower()
+        existing.password_hash       = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        existing.role                = assigned_role
+        existing.first_name          = data.get('first_name', '').strip()
+        existing.last_name           = data.get('last_name',  '').strip()
+        existing.is_active           = True
+        existing.is_verified         = False
+        existing.verify_token        = None
+        existing.verify_code         = code
+        existing.verify_code_expires = expires
+
+        # Reset roles
+        UserRole.query.filter_by(user_id=existing.user_id).delete()
+        db.session.add(UserRole(user_id=existing.user_id, role=assigned_role))
+        db.session.commit()
+
+        try:
+            send_verification_email(existing.email, existing.username, code)
+        except Exception:
+            pass
+
+        return jsonify({
+            'message': f'Account reactivated! A 6-digit verification code has been sent to {existing.email}.',
+            'email':   existing.email,
+        }), 200
+
+    # If exists and active -> reject
+    if existing_by_username:
+        return jsonify({'error': 'Username already taken'}), 409
+    if existing_by_email:
+        return jsonify({'error': 'Email already registered'}), 409
 
     new_user = User(
         username            = data['username'].strip(),
@@ -408,3 +446,28 @@ def deactivate_user(user_id):
     db.session.commit()
     status = "activated" if target.is_active else "deactivated"
     return jsonify({'message': f'User {target.username} {status}', 'is_active': target.is_active}), 200
+
+
+# -----------------------------------------------------------
+# DELETE USER (Admin only)
+# Frontend calls: DELETE /api/auth/users/<username>
+# We soft-delete by deactivating to avoid FK constraint failures.
+# -----------------------------------------------------------
+@auth_bp.route('/users/<string:username>', methods=['DELETE', 'OPTIONS'])
+@jwt_required()
+def delete_user(username):
+    if request.method == 'OPTIONS':
+        return jsonify({'ok': True}), 200
+    admin = get_user()
+    if not admin or not admin.has_role('admin'):
+        return jsonify({'error': 'Admins only'}), 403
+
+    target = User.query.filter(func.lower(User.username) == username.strip().lower()).first()
+    if not target:
+        return jsonify({'error': 'User not found'}), 404
+
+    # Soft delete to avoid breaking linked records
+    target.is_active = False
+    db.session.commit()
+
+    return jsonify({'message': f'User {target.username} deactivated'}), 200

@@ -21,7 +21,8 @@ def _send(to_email: str, subject: str, html_body: str):
         msg['To']              = to_email
         msg.attach(MIMEText(html_body, 'html'))
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        # Add a timeout so registration/login doesn't hang if SMTP is slow
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
             server.login(username, password)
             server.sendmail(username, to_email, msg.as_string())
     except Exception as e:
