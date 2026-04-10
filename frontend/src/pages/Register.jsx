@@ -8,6 +8,7 @@ import { useState } from "react";
 import { bgSportsPro } from "../styles/bgStyles";
 
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Register({ setPage, setVerifyEmail }) {
   const [form, setForm] = useState({
@@ -30,6 +31,9 @@ export default function Register({ setPage, setVerifyEmail }) {
 
     if (!form.username || !form.email || !form.password) {
       setError("Username, email and password are required."); return;
+    }
+    if (!emailRegex.test(form.email)) {
+      setError("Invalid email address."); return;
     }
     if (form.password !== form.confirm_password) {
       setError("Passwords do not match."); return;

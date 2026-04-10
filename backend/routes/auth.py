@@ -17,9 +17,12 @@ from utils.email_service import (
     send_password_reset_email,
 )
 import secrets, random
+import re
 from datetime import datetime, timedelta
 
 auth_bp = Blueprint('auth', __name__)
+
+EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
 def get_user():
@@ -40,6 +43,10 @@ def register():
     for field in ['username', 'email', 'password']:
         if not data.get(field):
             return jsonify({'error': f'{field} is required'}), 400
+
+    email = data.get('email','').strip().lower()
+    if not EMAIL_RE.match(email):
+        return jsonify({'error': 'Invalid email address'}), 400
 
     # Case-insensitive duplicate check (with reactivation support)
     existing_by_username = User.query.filter(
