@@ -149,7 +149,7 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
         </div>
 
         {/* Role badge */}
-        <span style={{
+        <span className="nav-role-badge" style={{
           background: "linear-gradient(135deg,#6c63ff,#3b82f6)",
           padding: "4px 10px", borderRadius: "20px",
           fontSize: "11px", fontWeight: "bold", color: "#fff",
@@ -158,7 +158,7 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
         </span>
 
         {/* Username */}
-        <span style={{ fontSize: "13px", color: "#aaa" }}>{user.username}</span>
+        <span className="nav-username" style={{ fontSize: "13px", color: "#aaa" }}>{user.username}</span>
 
         {/* Logout */}
         <button className="btn-login" onClick={onLogout}>Logout</button>

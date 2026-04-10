@@ -1045,6 +1045,22 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  .navbar {
+    height: auto;
+    padding: 0.5rem 1rem;
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  .navbar-brand { flex: 1; }
+  .navbar-right {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .nav-username { display: none; }
+
   .navbar-links { display: none; }
   .navbar-links.open {
     display: flex;
