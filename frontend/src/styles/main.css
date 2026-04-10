@@ -1129,6 +1129,14 @@ canvas.chartjs-render-monitor {
   .tournament-detail-hero h1, .tournament-detail-hero .SecTitle {
     font-size: 1.1rem !important;
   }
+
+  /* Analytics: stack visualizations in a single column on mobile */
+  .analytics-charts-row {
+    grid-template-columns: 1fr !important;
+  }
+  .analytics-team-detail {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 640px) {

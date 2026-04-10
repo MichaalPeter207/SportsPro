@@ -305,7 +305,7 @@ function OverviewTab({ data }) {
       </div>
 
       {/* Charts row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "20px" }}>
+      <div className="analytics-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "20px" }}>
         <Card title="Goals Per Match" subtitle="Home · Away · Total over time">
           {goals_trend.length === 0
             ? <Empty text="No completed matches yet" />
@@ -416,7 +416,7 @@ function TeamsTab({ teams, allTeams, selTeamId, setSelTeamId, teamDetail }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Charts row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+      <div className="analytics-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
         <Card title="Goals For vs Against" subtitle="By team">
           {teams.length === 0 ? <Empty text="No match data yet" /> : <div style={{ height: 260 }}><ChartCanvas id="chart-team-goals" height={260} /></div>}
         </Card>
@@ -426,7 +426,7 @@ function TeamsTab({ teams, allTeams, selTeamId, setSelTeamId, teamDetail }) {
       </div>
 
       {/* Team deep-dive */}
-      <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: "20px" }}>
+      <div className="analytics-charts-row analytics-team-detail" style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: "20px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {/* Team picker */}
           <Card title="Team Deep-Dive">
@@ -596,7 +596,7 @@ function PlayersTab({ scorers }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Top charts */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+      <div className="analytics-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
         <Card title="Goals & Assists Leaders" subtitle="Top 10 players">
           {scorers.length === 0 ? <Empty text="No stats entered yet" /> : <div style={{ height: 260 }}><ChartCanvas id="chart-top-scorers" height={260} /></div>}
         </Card>
@@ -717,7 +717,7 @@ function PredictionsTab({ data }) {
       </div>
 
       {/* Charts */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "20px" }}>
+      <div className="analytics-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "20px" }}>
         <Card title="Prediction Accuracy Over Time" subtitle="Running % · Green dot = correct · Red dot = wrong">
           {records.length === 0
             ? <Empty text="No predictions evaluated yet" />
