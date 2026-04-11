@@ -23,6 +23,8 @@ class Config:
     DEBUG      = os.getenv('DEBUG', 'True') == 'True'
     SECRET_KEY = os.getenv('SECRET_KEY', 'flask-secret-key-2024')
     FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://sports-pro-vm55.vercel.app')
+    RESEND_API_KEY = os.getenv('RESEND_API_KEY', '')
+    RESEND_FROM = os.getenv('RESEND_FROM', 'SportsPro <no-reply@sportspro.app>')
 
     # -----------------------------------------------------------
     # ADMIN ACTIVATION CODE

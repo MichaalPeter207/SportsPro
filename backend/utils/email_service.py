@@ -4,6 +4,7 @@
 # =============================================================
 
 import smtplib
+import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text      import MIMEText
 from flask import current_app
@@ -14,10 +15,45 @@ def _frontend_url():
 
 
 def _send(to_email: str, subject: str, html_body: str):
-    """Internal helper — sends an HTML email via Gmail SMTP."""
+    """Internal helper ? sends an HTML email via Resend (preferred) or Gmail SMTP."""
     try:
+        api_key = current_app.config.get('RESEND_API_KEY')
+        resend_from = current_app.config.get('RESEND_FROM', 'SportsPro <no-reply@sportspro.app>')
+        if api_key:
+            resp = requests.post(
+                'https://api.resend.com/emails',
+                headers={
+                    'Authorization': f'Bearer {api_key}',
+                    'Content-Type': 'application/json',
+                },
+                json={
+                    'from': resend_from,
+                    'to': [to_email],
+                    'subject': subject,
+                    'html': html_body,
+                },
+                timeout=10,
+            )
+            if resp.status_code >= 400:
+                raise Exception(f'Resend error {resp.status_code}: {resp.text}')
+            return
+
+        # Fallback: Gmail SMTP
         username = current_app.config['MAIL_USERNAME']
         password = current_app.config['MAIL_PASSWORD']
+
+        msg                    = MIMEMultipart('alternative')
+        msg['Subject']         = subject
+        msg['From']            = f"SportsPro <{username}>"
+        msg['To']              = to_email
+        msg.attach(MIMEText(html_body, 'html'))
+
+        # Add a timeout so registration/login doesn't hang if SMTP is slow
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
+            server.login(username, password)
+            server.sendmail(username, to_email, msg.as_string())
+    except Exception as e:
+        current_app.logger.error(f"Email send error to {to_email}: {e}")
 
         msg                    = MIMEMultipart('alternative')
         msg['Subject']         = subject
