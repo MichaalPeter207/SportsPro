@@ -11,10 +11,11 @@ import { bgSportsPro } from "../styles/bgStyles";
 
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
-export default function VerifyEmail({ setPage, verifyEmail }) {
+export default function VerifyEmail({ setPage, verifyEmail, fallbackCode }) {
   const params = new URLSearchParams(window.location.search);
   const qpEmail = params.get("email") || "";
   const [email, setEmail]       = useState(verifyEmail || qpEmail || "");
+  const [fallback, setFallback] = useState(fallbackCode || "");
   const [digits, setDigits]     = useState(["", "", "", "", "", ""]);
   const [error, setError]       = useState("");
   const [success, setSuccess]   = useState("");
@@ -164,6 +165,11 @@ export default function VerifyEmail({ setPage, verifyEmail }) {
         )}
 
         {/* Alerts */}
+        {fallback && (
+          <div className="alert alert-info" style={{ textAlign:"left" }}>
+            Email could not be sent. Use this verification code: <strong>{fallback}</strong>
+          </div>
+        )}
         {error   && <div className="alert alert-error"   style={{ textAlign:"left" }}>⚠ {error}</div>}
         {success && <div className="alert alert-success" style={{ textAlign:"left" }}>✓ {success}</div>}
         {resent  && !error && (

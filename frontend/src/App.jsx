@@ -34,6 +34,7 @@ export default function App() {
   const [user,        setUser]        = useState(null);
   const [hydrated,    setHydrated]    = useState(false);
   const [verifyEmail, setVerifyEmail] = useState("");
+  const [verifyFallback, setVerifyFallback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState("");
@@ -180,7 +181,7 @@ export default function App() {
       <main>
         {page === "login"          && <Login    setPage={setPage} setUser={setUser} setVerifyEmail={setVerifyEmail} />}
         {page === "register"       && <Register setPage={setPage} setVerifyEmail={setVerifyEmail} />}
-        {page === "verify-email"   && <VerifyEmail setPage={setPage} verifyEmail={verifyEmail} />}
+        {page === "verify-email"   && <VerifyEmail setPage={setPage} verifyEmail={verifyEmail} fallbackCode={verifyFallback} />}
         {page === "reset-password" && <ResetPassword setPage={setPage} />}
         {!authPages.includes(page) && <Home setPage={setPage} user={null} />}
       </main>

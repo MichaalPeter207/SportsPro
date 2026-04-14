@@ -90,14 +90,16 @@ def register():
         db.session.add(UserRole(user_id=existing.user_id, role=assigned_role))
         db.session.commit()
 
+        email_failed = False
         try:
             send_verification_email(existing.email, existing.username, code)
         except Exception:
-            pass
+            email_failed = True
 
         return jsonify({
             'message': f'Account reactivated! A 6-digit verification code has been sent to {existing.email}.',
             'email':   existing.email,
+            'fallback_code': code if email_failed else None,
         }), 200
 
     # If exists and active -> reject
@@ -124,14 +126,16 @@ def register():
     db.session.add(UserRole(user_id=new_user.user_id, role=assigned_role))
     db.session.commit()
 
+    email_failed = False
     try:
         send_verification_email(new_user.email, new_user.username, code)
     except Exception:
-        pass
+        email_failed = True
 
     return jsonify({
         'message': f'Account created! A 6-digit verification code has been sent to {new_user.email}.',
         'email':   new_user.email,
+        'fallback_code': code if email_failed else None,
     }), 201
 
 

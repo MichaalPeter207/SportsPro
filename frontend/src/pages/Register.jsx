@@ -10,7 +10,7 @@ import { bgSportsPro } from "../styles/bgStyles";
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function Register({ setPage, setVerifyEmail }) {
+export default function Register({ setPage, setVerifyEmail, setVerifyFallback }) {
   const [form, setForm] = useState({
     username: "", email: "", password: "", confirm_password: "",
     first_name: "", last_name: "", role: "fan", activation_code: ""
@@ -20,6 +20,7 @@ export default function Register({ setPage, setVerifyEmail }) {
   const [showCode, setShowCode]         = useState(false);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
+  const [fallbackCode, setFallbackCode] = useState("");
 
   const handleRoleChange = (e) => {
     setForm({ ...form, role: e.target.value, activation_code: "" });
@@ -55,6 +56,11 @@ export default function Register({ setPage, setVerifyEmail }) {
       const data = await res.json();
 
       if (!res.ok) { setError(data.error || "Registration failed"); return; }
+
+      if (data.fallback_code) {
+        setFallbackCode(data.fallback_code);
+        if (setVerifyFallback) setVerifyFallback(data.fallback_code);
+      }
 
       // Pass the registered email to the verify page and navigate there
       const email = data.email || form.email;
@@ -93,6 +99,11 @@ export default function Register({ setPage, setVerifyEmail }) {
         <div className="auth-title">Create Account</div>
         <div className="auth-subtitle">Join the SportsPro platform</div>
 
+        {fallbackCode && (
+          <div className="alert alert-info" style={{ marginBottom: "0.75rem" }}>
+            Email could not be sent. Use this verification code: <strong>{fallbackCode}</strong>
+          </div>
+        )}
         {error && <div className="alert alert-error">⚠ {error}</div>}
 
         {/* Name row */}
