@@ -36,7 +36,9 @@ def _send(to_email: str, subject: str, html_body: str):
             )
             if resp.status_code >= 400:
                 raise Exception(f'Resend error {resp.status_code}: {resp.text}')
-            return
+            return True
+
+        # Fallback: Gmail SMTP
 
         # Fallback: Gmail SMTP
         username = current_app.config['MAIL_USERNAME']
@@ -52,8 +54,10 @@ def _send(to_email: str, subject: str, html_body: str):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
             server.login(username, password)
             server.sendmail(username, to_email, msg.as_string())
+        return True
     except Exception as e:
         current_app.logger.error(f"Email send error to {to_email}: {e}")
+        return False
 
         msg                    = MIMEMultipart('alternative')
         msg['Subject']         = subject
@@ -65,8 +69,10 @@ def _send(to_email: str, subject: str, html_body: str):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
             server.login(username, password)
             server.sendmail(username, to_email, msg.as_string())
+        return True
     except Exception as e:
         current_app.logger.error(f"Email send error to {to_email}: {e}")
+        return False
 
 
 # -----------------------------------------------------------
@@ -97,7 +103,7 @@ def send_verification_email(to_email: str, username: str, code: str):
       </div>
     </div>
     """
-    _send(to_email, subject, html)
+    return _send(to_email, subject, html)
 
 
 # -----------------------------------------------------------
@@ -159,7 +165,7 @@ def send_role_upgrade_email(to_email: str, username: str,
       </div>
     </div>
     """
-    _send(to_email, subject, html)
+    return _send(to_email, subject, html)
 
 
 # -----------------------------------------------------------
@@ -188,7 +194,7 @@ def send_admin_activation_email(to_email: str, username: str, activation_code: s
       </div>
     </div>
     """
-    _send(to_email, subject, html)
+    return _send(to_email, subject, html)
 
 
 # -----------------------------------------------------------
@@ -224,4 +230,4 @@ def send_password_reset_email(to_email: str, username: str, token: str):
       </div>
     </div>
     """
-    _send(to_email, subject, html)
+    return _send(to_email, subject, html)
