@@ -152,6 +152,19 @@ body {
   gap: 1rem;
 }
 
+.notif-wrap {
+  position: relative;
+}
+
+.notif-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: min(320px, calc(100vw - 24px));
+  max-height: min(70vh, 460px);
+  overflow-y: auto;
+}
+
 .btn-login {
   padding: 0.45rem 1.2rem;
   border-radius: var(--radius);
@@ -1045,22 +1058,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
-  .navbar {
-    height: auto;
-    padding: 0.5rem 1rem;
-    flex-wrap: wrap;
-    row-gap: 0.4rem;
-  }
-  .navbar-brand { flex: 1; }
-  .navbar-right {
-    width: 100%;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  .nav-username { display: none; }
-
   .navbar-links { display: none; }
   .navbar-links.open {
     display: flex;
@@ -1085,6 +1082,16 @@ body {
   }
   .tp-grid > * {
     min-width: 0;
+  }
+
+  .notif-panel {
+    position: fixed;
+    top: calc(var(--nav-height) + 8px);
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: 60vh;
+    overflow-y: auto;
   }
 }
 

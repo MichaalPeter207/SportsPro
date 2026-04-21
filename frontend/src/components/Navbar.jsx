@@ -105,8 +105,8 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
       <div className="navbar-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 
         {/* Notification Bell */}
-        <div ref={notifRef} style={{ position: "relative" }}>
-          <button onClick={() => setNotifOpen(!notifOpen)} style={{
+        <div ref={notifRef} className="notif-wrap">
+          <button className="notif-bell-btn" onClick={() => setNotifOpen(!notifOpen)} style={{
             background: "none", border: "none", cursor: "pointer",
             fontSize: "20px", position: "relative", padding: "4px 8px",
           }} title="Notifications">
@@ -122,9 +122,8 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
           </button>
 
           {notifOpen && (
-            <div style={{
-              position: "absolute", right: 0, top: "110%",
-              width: "320px", background: "#1a1a2e",
+            <div className="notif-panel" style={{
+              background: "#1a1a2e",
               border: "1px solid #6c63ff33", borderRadius: "12px",
               boxShadow: "0 8px 32px rgba(0,0,0,.5)", zIndex: 1000, overflow: "hidden",
             }}>
@@ -149,7 +148,7 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
         </div>
 
         {/* Role badge */}
-        <span className="nav-role-badge" style={{
+        <span style={{
           background: "linear-gradient(135deg,#6c63ff,#3b82f6)",
           padding: "4px 10px", borderRadius: "20px",
           fontSize: "11px", fontWeight: "bold", color: "#fff",
@@ -158,7 +157,7 @@ export default function Navbar({ currentPage, setPage, user, onLogout }) {
         </span>
 
         {/* Username */}
-        <span className="nav-username" style={{ fontSize: "13px", color: "#aaa" }}>{user.username}</span>
+        <span style={{ fontSize: "13px", color: "#aaa" }}>{user.username}</span>
 
         {/* Logout */}
         <button className="btn-login" onClick={onLogout}>Logout</button>
